@@ -5,9 +5,11 @@
 
 case "$ACTION" in
 	ifup)
-		/etc/init.d/xlnetacc start
+		#修改为restart后可保证快鸟服务启动前关闭正在运行的快鸟服务
+		/etc/init.d/xlnetacc restart
 		;;
 	ifdown)
-		/etc/init.d/xlnetacc stop
+		#ifdown事件触发后不停止快鸟服务，而是等iface重新上线（网络恢复正常）后重启服务，以此保证账户注销流程可以正常进行
+		#/etc/init.d/xlnetacc stop
 		;;
 esac
