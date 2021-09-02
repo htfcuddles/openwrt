@@ -19,7 +19,9 @@ function index()
 end
 
 local function is_running(name)
-	return luci.sys.call("pidof %s >/dev/null" %{name}) == 0
+	--#修复对于重复运行的判断失效
+	--return luci.sys.call("pidof %s >/dev/null" %{name}) == 0
+	return luci.sys.call("pgrep -f %s >/dev/null 2>&1" %{name}) == 0
 end
 
 function action_status()

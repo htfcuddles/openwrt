@@ -599,12 +599,15 @@ xlnetacc_init() {
 
 	# 防止重复启动
 	local pid
-	for pid in $(pidof "${0##*/}"); do
+	readonly NAME=xlnetacc
+	#修复对于重复运行的判断失效
+	#for pid in $(pidof "${0##*/}"); do
+	for pid in $(pgrep -f "${NAME}.sh"); do
 		[ $pid -ne $$ ] && return 1
 	done
 
 	# 读取设置
-	readonly NAME=xlnetacc
+	#readonly NAME=xlnetacc
 	readonly LOGFILE=/var/log/${NAME}.log
 	readonly down_state_file=/var/state/${NAME}_down_state
 	readonly up_state_file=/var/state/${NAME}_up_state

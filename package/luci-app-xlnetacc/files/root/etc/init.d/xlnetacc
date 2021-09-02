@@ -8,7 +8,9 @@ NAME=xlnetacc
 
 start() {
 	local retry=1
-	while pidof "${NAME}.sh" >/dev/null 2>&1; do
+	#修复对于重复运行的判断失效
+	#while pidof "${NAME}.sh" >/dev/null 2>&1; do
+	while pgrep -f "${NAME}.sh" >/dev/null 2>&1; do
 		[ $retry -ge 10 ] && return 1 || let retry++
 		sleep 1
 	done
@@ -27,10 +29,13 @@ start() {
 }
 
 stop() {
-	pidof "${NAME}.sh" >/dev/null 2>&1 || return 1
+	#修复对于重复运行的判断失效
+	#pidof "${NAME}.sh" >/dev/null 2>&1 || return 1
+	pgrep -f "${NAME}.sh" >/dev/null 2>&1 || return 1
 
 	local pid spid
-	for pid in $(pidof "${NAME}.sh"); do
+	#for pid in $(pidof "${NAME}.sh"); do
+	for pid in $(pgrep -f "${NAME}.sh"); do
 		echo "Stop XLNetAcc process PID: $pid"
 		kill $pid >/dev/null 2>&1
 		for spid in $(pgrep -P $pid "sleep"); do
@@ -43,6 +48,6 @@ stop() {
 }
 
 restart() {
-	stop && sleep 1
+	stop && sleep 10
 	start
 }
